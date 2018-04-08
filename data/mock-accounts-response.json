@@ -1,0 +1,39 @@
+{
+    "results": [
+        {
+            "update_timestamp": "2018-03-13T20:01:36.3716728Z",
+            "account_id": "8c0f6b05fa00f3f7142660c377237be1",
+            "account_type": "TRANSACTION",
+            "display_name": "Current Account",
+            "currency": "GBP",
+            "account_number": {
+                "iban": "GB32 ESSE 4048 6562 1360 16",
+                "swift_bic": "CPBKGB00",
+                "number": "10001000",
+                "sort_code": "20-31-50"
+            },
+            "provider": {
+                "display_name": "Mock",
+                "provider_id": "mock",
+                "logo_uri": "https://auth.truelayer.com/img/banks/banks-icons/mock-icon.svg"
+            }
+        },
+        {
+            "update_timestamp": "2018-03-13T20:01:36.3717408Z",
+            "account_id": "27c966090b6c3c30b558ad02b5a83d81",
+            "account_type": "SAVINGS",
+            "display_name": "Savings Account",
+            "currency": "GBP",
+            "account_number": {
+                "number": "10001001",
+                "sort_code": "20-31-50"
+            },
+            "provider": {
+                "display_name": "Mock",
+                "provider_id": "mock",
+                "logo_uri": "https://auth.truelayer.com/img/banks/banks-icons/mock-icon.svg"
+            }
+        }
+    ],
+    "status": "Succeeded"
+}
