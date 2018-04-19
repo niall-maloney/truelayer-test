@@ -13,8 +13,8 @@ build_script:
     call dotnet restore
 
     call dotnet build .\src\TrueLayerTest\TrueLayerTest.csproj
-
-    docker build . -t truelayertest
+    # linux containers not supported by appveyor yet
+    # docker build . -t truelayertest
 test_script:
 - cmd: >-
     dotnet test .\tests\TrueLayer.Tests\TrueLayer.Tests.csproj
