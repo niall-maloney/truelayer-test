@@ -14,7 +14,7 @@ build_script:
 
     call dotnet build .\src\TrueLayerTest\TrueLayerTest.csproj
 
-    docker build -t truelayertest
+    docker build . -t truelayertest
 test_script:
 - cmd: >-
     dotnet test .\tests\TrueLayer.Tests\TrueLayer.Tests.csproj
