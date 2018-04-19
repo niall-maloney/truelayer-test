@@ -34,7 +34,7 @@ namespace TrueLayerTest.Model
 
         public async Task<GroupedTransactionResults> GetTransactionsGroupedByAccount(string accessToken)
         {
-            var accounts = await GetAccounts(accessToken);
+            var accounts = await GetAccounts(accessToken).ConfigureAwait(false);
 
             var groupedTransactions = new List<List<Transaction>>();
             foreach (var account in accounts)

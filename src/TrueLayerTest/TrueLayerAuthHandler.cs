@@ -58,15 +58,15 @@ namespace TrueLayerTest
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, Options.TokenEndpoint);
             requestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             requestMessage.Content = requestContent;
-            var response = await Backchannel.SendAsync(requestMessage, Context.RequestAborted);
+            var response = await Backchannel.SendAsync(requestMessage, Context.RequestAborted).ConfigureAwait(false);
             if (response.IsSuccessStatusCode)
             {
-                var payload = JObject.Parse(await response.Content.ReadAsStringAsync());
+                var payload = JObject.Parse(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
                 var _ = Options.CallbackPath;
                 return OAuthTokenResponse.Success(payload);
             }
 
-            var error = "OAuth token endpoint failure: " + await Display(response);
+            var error = "OAuth token endpoint failure: " + await Display(response).ConfigureAwait(false);
             return OAuthTokenResponse.Failed(new Exception(error));
         }
 
@@ -85,7 +85,7 @@ namespace TrueLayerTest
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, Options.TokenEndpoint);
             requestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             requestMessage.Content = requestContent;
-            var response = await Backchannel.SendAsync(requestMessage, Context.RequestAborted);
+            var response = await Backchannel.SendAsync(requestMessage, Context.RequestAborted).ConfigureAwait(false);
             if (response.IsSuccessStatusCode)
             {
                 var payload = JObject.Parse(await response.Content.ReadAsStringAsync());
@@ -93,7 +93,7 @@ namespace TrueLayerTest
                 return OAuthTokenResponse.Success(payload);
             }
 
-            var error = "OAuth token endpoint failure: " + await Display(response);
+            var error = "OAuth token endpoint failure: " + await Display(response).ConfigureAwait(false);
             return OAuthTokenResponse.Failed(new Exception(error));
         }
 
@@ -110,7 +110,9 @@ namespace TrueLayerTest
                 failureMessage.Append(error);
                 var errorDescription = query["error_description"];
                 if (!StringValues.IsNullOrEmpty(errorDescription))
+                {
                     failureMessage.Append(";Description=").Append(errorDescription);
+                }
                 var errorUri = query["error_uri"];
                 if (!StringValues.IsNullOrEmpty(errorUri)) { failureMessage.Append(";Uri=").Append(errorUri); }
 
@@ -128,7 +130,7 @@ namespace TrueLayerTest
 
             if (StringValues.IsNullOrEmpty(code)) { return HandleRequestResult.Fail("Code was not found."); }
 
-            var tokens = await ExchangeCodeAsync(code, BuildRedirectUri(Options.CallbackPath));
+            var tokens = await ExchangeCodeAsync(code, BuildRedirectUri(Options.CallbackPath)).ConfigureAwait(false);
 
             if (tokens.Error != null) { return HandleRequestResult.Fail(tokens.Error); }
 
@@ -147,12 +149,15 @@ namespace TrueLayerTest
                 };
 
                 if (!string.IsNullOrEmpty(tokens.RefreshToken))
+                {
                     authTokens.Add(new AuthenticationToken { Name = "refresh_token", Value = tokens.RefreshToken });
-
+                }
                 if (!string.IsNullOrEmpty(tokens.TokenType))
+                {
                     authTokens.Add(new AuthenticationToken { Name = "token_type", Value = tokens.TokenType });
-
+                }
                 if (!string.IsNullOrEmpty(tokens.ExpiresIn))
+                {
                     if (int.TryParse(tokens.ExpiresIn, NumberStyles.Integer, CultureInfo.InvariantCulture,
                         out var value))
                     {
@@ -165,11 +170,12 @@ namespace TrueLayerTest
                             Value = expiresAt.ToString("o", CultureInfo.InvariantCulture)
                         });
                     }
+                }
 
                 properties.StoreTokens(authTokens);
             }
 
-            var ticket = await CreateTicketAsync(identity, properties, tokens);
+            var ticket = await CreateTicketAsync(identity, properties, tokens).ConfigureAwait(false);
             if (ticket != null)
             {
                 return HandleRequestResult.Success(ticket);
@@ -182,7 +188,7 @@ namespace TrueLayerTest
             var output = new StringBuilder();
             output.Append("Status: " + response.StatusCode + ";");
             output.Append("Headers: " + response.Headers + ";");
-            output.Append("Body: " + await response.Content.ReadAsStringAsync() + ";");
+            output.Append("Body: " + await response.Content.ReadAsStringAsync() + ";").ConfigureAwait(false);
             return output.ToString();
         }
     }

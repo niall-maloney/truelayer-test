@@ -35,7 +35,7 @@ namespace TrueLayerTest.Controllers
 
         // GET api/v1/transactions/
         [HttpGet]
-        public async Task<string> GetAsync(string accountId = "8c0f6b05fa00f3f7142660c377237be1")
+        public async Task<string> GetAsync()
         {
             if (!User.Identity.IsAuthenticated)
             {
