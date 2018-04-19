@@ -35,7 +35,7 @@ namespace TrueLayerTest.Controllers
 
         // GET api/v1/transactions/
         [HttpGet]
-        public async Task<string> GetAsync(string accountId = "8c0f6b05fa00f3f7142660c377237be1")
+        public async Task<string> GetAsync()
         {
             if (!User.Identity.IsAuthenticated)
             {
@@ -44,9 +44,9 @@ namespace TrueLayerTest.Controllers
 
             try
             {
-                var accessToken = await RefreshTokenAsync();
+                var accessToken = await RefreshTokenAsync().ConfigureAwait(false);
 
-                var results = await Results.GetTransactionsGroupedByAccount(accessToken);
+                var results = await Results.GetTransactionsGroupedByAccount(accessToken).ConfigureAwait(false);
 
                 return results.ToJson();
             }
@@ -58,15 +58,15 @@ namespace TrueLayerTest.Controllers
 
         private async Task<string> RefreshTokenAsync()
         {
-            var userResult = await HttpContext.AuthenticateAsync("TrueLayer");
+            var userResult = await HttpContext.AuthenticateAsync("TrueLayer").ConfigureAwait(false);
             var properties = userResult.Properties;
             var expiry = properties.GetTokenValue("expires_at");
             if (DateTime.Parse(expiry) <= DateTime.Now)
             {
                 var options = HttpContext.RequestServices.GetRequiredService<IOptionsMonitor<TrueLayerOptions>>().Get("TrueLayer");
-                var scheme = await HttpContext.RequestServices.GetRequiredService<IAuthenticationSchemeProvider>().GetSchemeAsync("TrueLayer");
+                var scheme = await HttpContext.RequestServices.GetRequiredService<IAuthenticationSchemeProvider>().GetSchemeAsync("TrueLayer").ConfigureAwait(false);
 
-                await options.Events.RefreshToken(new TrueLayerTokenRefreshContext(userResult.Principal, HttpContext, scheme, properties, options));
+                await options.Events.RefreshToken(new TrueLayerTokenRefreshContext(userResult.Principal, HttpContext, scheme, properties, options)).ConfigureAwait(false);
             }
 
             return properties.GetTokenValue("access_token");

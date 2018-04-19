@@ -72,7 +72,7 @@ namespace TrueLayerTest
             log.AddConsole(LogLevel.Trace);
             log.AddDebug();
 
-            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
+            if (env.IsDevelopment()) { app.UseDeveloperExceptionPage(); }
 
             app.UseAuthentication();
             app.UseMvc();
@@ -94,18 +94,18 @@ namespace TrueLayerTest
                 {"grant_type", "refresh_token"},
                 {"refresh_token", refreshToken}
             };
-            
+
             var content = new FormUrlEncodedContent(pairs);
             var refreshResponse =
-                await options.Backchannel.PostAsync(options.TokenEndpoint, content, httpContext.RequestAborted);
+                await options.Backchannel.PostAsync(options.TokenEndpoint, content, httpContext.RequestAborted).ConfigureAwait(false);
             refreshResponse.EnsureSuccessStatusCode();
 
-            var payload = JObject.Parse(await refreshResponse.Content.ReadAsStringAsync());
+            var payload = JObject.Parse(await refreshResponse.Content.ReadAsStringAsync().ConfigureAwait(false));
 
             // Persist the new acess token
             properties.UpdateTokenValue("access_token", payload.Value<string>("access_token"));
             refreshToken = payload.Value<string>("refresh_token");
-            if (!string.IsNullOrEmpty(refreshToken)) properties.UpdateTokenValue("refresh_token", refreshToken);
+            if (!string.IsNullOrEmpty(refreshToken)) { properties.UpdateTokenValue("refresh_token", refreshToken); }
             if (int.TryParse(payload.Value<string>("expires_in"), NumberStyles.Integer, CultureInfo.InvariantCulture,
                 out var seconds))
             {
@@ -113,7 +113,7 @@ namespace TrueLayerTest
                 properties.UpdateTokenValue("expires_at", expiresAt.ToString("o", CultureInfo.InvariantCulture));
             }
 
-            await httpContext.SignInAsync(context.Principal, properties);
+            await httpContext.SignInAsync(context.Principal, properties).ConfigureAwait(false);
         }
     }
 }

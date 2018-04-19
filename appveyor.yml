@@ -1,0 +1,31 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: '{version}'
+  package_version: '{version}'
+  assembly_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
+build_script:
+- cmd: >-
+    call dotnet restore
+
+    call dotnet build .\src\TrueLayerTest\TrueLayerTest.csproj
+
+#    linux containers not supported by appveyor yet
+#    docker build . -t truelayertest
+test_script:
+- cmd: >-
+    dotnet test .\tests\TrueLayer.Tests\TrueLayer.Tests.csproj
+
+    dotnet test .\tests\TrueLayerTest.Tests\TrueLayerTest.Tests.csproj
+notifications:
+- provider: Slack
+  incoming_webhook: 
+    secure: 9v4gnDq4zFsnuGmkFNe7wN3KHW+DtMmvh2xyjLwUaz5VfdtNrhv10Xf87Eqav+lGrhEEprW6JbFEEeaHmOdVDFv8J0QV7qZeJzQuWmHuS1M=
+  channel: truelayer-test
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: true

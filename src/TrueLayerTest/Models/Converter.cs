@@ -4,7 +4,7 @@ using Newtonsoft.Json.Converters;
 
 namespace TrueLayerTest.Model
 {
-    internal class Converter
+    internal static class Converter
     {
         public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
         {
