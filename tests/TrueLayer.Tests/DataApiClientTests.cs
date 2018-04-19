@@ -33,7 +33,7 @@ namespace TrueLayer.Tests
             return mockCache;
         }
 
-        private Mock<IDistributedCache> SetupNullMockCache()
+        private static Mock<IDistributedCache> SetupNullMockCache()
         {
             var mockCache = new Mock<IDistributedCache>();
             mockCache.Setup(m => m.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))

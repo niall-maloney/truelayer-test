@@ -20,14 +20,14 @@ namespace TrueLayerTest.Model
 
         public async Task<List<Account>> GetAccounts(string accessToken)
         {
-            var response = await DataApiClient.GetAccounts(accessToken);
+            var response = await DataApiClient.GetAccounts(accessToken).ConfigureAwait(false);
 
             return response.Select(x => x.MapToAccount()).ToList();
         }
 
         public async Task<List<Transaction>> GetTransactions(string accessToken, string accountId)
         {
-            var response = await DataApiClient.GetAccountTransactions(accessToken, accountId);
+            var response = await DataApiClient.GetAccountTransactions(accessToken, accountId).ConfigureAwait(false);
 
             return response.Select(x => x.MapToTransaction()).ToList();
         }
@@ -39,7 +39,7 @@ namespace TrueLayerTest.Model
             var groupedTransactions = new List<List<Transaction>>();
             foreach (var account in accounts)
             {
-                groupedTransactions.Add(await GetTransactions(accessToken, account.AccountId));
+                groupedTransactions.Add(await GetTransactions(accessToken, account.AccountId).ConfigureAwait(false));
             }
 
             return new GroupedTransactionResults { Results = groupedTransactions };
@@ -52,7 +52,7 @@ namespace TrueLayerTest.Model
             var transactions = new List<Transaction>();
             foreach (var account in accounts)
             {
-                transactions.AddRange(await GetTransactions(accessToken, account.AccountId));
+                transactions.AddRange(await GetTransactions(accessToken, account.AccountId).ConfigureAwait(false));
             }
 
             // Group the transactions by TransactionCateogry and Currency

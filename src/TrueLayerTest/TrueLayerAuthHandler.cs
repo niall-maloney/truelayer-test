@@ -112,7 +112,7 @@ namespace TrueLayerTest
                 if (!StringValues.IsNullOrEmpty(errorDescription))
                     failureMessage.Append(";Description=").Append(errorDescription);
                 var errorUri = query["error_uri"];
-                if (!StringValues.IsNullOrEmpty(errorUri)) failureMessage.Append(";Uri=").Append(errorUri);
+                if (!StringValues.IsNullOrEmpty(errorUri)) { failureMessage.Append(";Uri=").Append(errorUri); }
 
                 return HandleRequestResult.Fail(failureMessage.ToString());
             }
@@ -121,19 +121,21 @@ namespace TrueLayerTest
             var state = query["state"];
 
             properties = Options.StateDataFormat.Unprotect(state);
-            if (properties == null) return HandleRequestResult.Fail("The oauth state was missing or invalid.");
+            if (properties == null) { return HandleRequestResult.Fail("The oauth state was missing or invalid."); }
 
             // OAuth2 10.12 CSRF
-            if (!ValidateCorrelationId(properties)) return HandleRequestResult.Fail("Correlation failed.");
+            if (!ValidateCorrelationId(properties)) { return HandleRequestResult.Fail("Correlation failed."); }
 
-            if (StringValues.IsNullOrEmpty(code)) return HandleRequestResult.Fail("Code was not found.");
+            if (StringValues.IsNullOrEmpty(code)) { return HandleRequestResult.Fail("Code was not found."); }
 
             var tokens = await ExchangeCodeAsync(code, BuildRedirectUri(Options.CallbackPath));
 
-            if (tokens.Error != null) return HandleRequestResult.Fail(tokens.Error);
+            if (tokens.Error != null) { return HandleRequestResult.Fail(tokens.Error); }
 
             if (string.IsNullOrEmpty(tokens.AccessToken))
+            {
                 return HandleRequestResult.Fail("Failed to retrieve access token.");
+            }
 
             var identity = new ClaimsIdentity(ClaimsIssuer);
 
@@ -145,10 +147,10 @@ namespace TrueLayerTest
                 };
 
                 if (!string.IsNullOrEmpty(tokens.RefreshToken))
-                    authTokens.Add(new AuthenticationToken {Name = "refresh_token", Value = tokens.RefreshToken});
+                    authTokens.Add(new AuthenticationToken { Name = "refresh_token", Value = tokens.RefreshToken });
 
                 if (!string.IsNullOrEmpty(tokens.TokenType))
-                    authTokens.Add(new AuthenticationToken {Name = "token_type", Value = tokens.TokenType});
+                    authTokens.Add(new AuthenticationToken { Name = "token_type", Value = tokens.TokenType });
 
                 if (!string.IsNullOrEmpty(tokens.ExpiresIn))
                     if (int.TryParse(tokens.ExpiresIn, NumberStyles.Integer, CultureInfo.InvariantCulture,
@@ -169,7 +171,9 @@ namespace TrueLayerTest
 
             var ticket = await CreateTicketAsync(identity, properties, tokens);
             if (ticket != null)
+            {
                 return HandleRequestResult.Success(ticket);
+            }
             return HandleRequestResult.Fail("Failed to retrieve user information from remote server.");
         }
 

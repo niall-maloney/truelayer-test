@@ -15,7 +15,9 @@ RUN dotnet build "./src/TrueLayerTest/TrueLayerTest.csproj" -c Release
 RUN dotnet publish "./src/TrueLayerTest/TrueLayerTest.csproj" -c Release -o "../../dist"
 
 #App image
-FROM microsoft/aspnetcore:2.0-stretch  
+FROM microsoft/aspnetcore:2.0-stretch 
+ 
+LABEL maintainer="niall@maloney.ws"
 WORKDIR /app
 COPY --from=build /sln/dist .
 
