@@ -188,7 +188,7 @@ namespace TrueLayerTest
             var output = new StringBuilder();
             output.Append("Status: " + response.StatusCode + ";");
             output.Append("Headers: " + response.Headers + ";");
-            output.Append("Body: " + await response.Content.ReadAsStringAsync() + ";").ConfigureAwait(false);
+            output.Append("Body: " + await response.Content.ReadAsStringAsync().ConfigureAwait(false) + ";");
             return output.ToString();
         }
     }
